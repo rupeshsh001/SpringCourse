@@ -21,7 +21,7 @@ public class Course {
 
     @NotBlank(message = "durationInMonth is mandatory")
     @NotNull(message = "durationInMonth is mandatory")
-    @Pattern(regexp = "^[0-9] month$")
+    @Pattern(regexp = "^[0-9] month$", message = "durationInMonth should be like n month")
     private String durationInMonth;
 
     @NotNull(message = "amount is mandatory")

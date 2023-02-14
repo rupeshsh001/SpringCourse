@@ -4,22 +4,26 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.testspring.spring.entities.Course;
-import com.testspring.spring.errorHandLing.CourseAlreadyExistsException;
-import com.testspring.spring.errorHandLing.CourseNotFoundException;
+import com.testspring.spring.errorHandLing.AlreadyExistsException;
+import com.testspring.spring.errorHandLing.NotFoundException;
 import com.testspring.spring.mongoDbPackage.ConnectDb;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
+@Transactional
 public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private ConnectDb course;
 
-    List<Course> list;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public List<Course> getCourses() {
@@ -27,10 +31,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> getCourseByTitle(String title) {
+        List<Course> result= course.findByTitle(title);
+        if(result.isEmpty()){
+            throw new NotFoundException(title+": course not found");
+        }
+        return course.findByTitle(title);
+    }
+
+    @Override
     public Optional<Course> getCourseById(String courseId) {
         Optional<Course> result = course.findById(courseId);
         if (!result.isPresent()) {
-            throw new CourseNotFoundException("course not found!!!");
+            throw new NotFoundException("course not found!!!");
         }
         return result;
     }
@@ -39,11 +52,9 @@ public class CourseServiceImpl implements CourseService {
     public Course addCourse(Course newCourse) {
         Query query = new Query();
         query.addCriteria(where("title").is(newCourse.getTitle()));
-        List<Course> allCourses = course.findAll();
-        for (Course cc : allCourses) {
-            if (newCourse.getTitle().equals(cc.getTitle())) {
-                throw new CourseAlreadyExistsException("course already exist");
-            }
+        List<Course> result=mongoTemplate.find(query,Course.class);
+        if(!result.isEmpty()){
+            throw new AlreadyExistsException("course already exist");
         }
         return course.save(newCourse);
     }
@@ -52,7 +63,7 @@ public class CourseServiceImpl implements CourseService {
     public Optional<Course> updateCourse(String courseId, Course updatedCourse) {
         Optional<Course> result = course.findById(courseId);
         if (!result.isPresent()) {
-            throw new CourseNotFoundException("course not found to Upate!!!");
+            throw new NotFoundException("course not found to Upate!!!");
         }
         Course updatedResult = result.get();
         updatedResult.setTitle(updatedCourse.getTitle() != null ? updatedCourse.getTitle() : updatedResult.getTitle());
@@ -67,16 +78,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<Course> deleteCourse(String courseId) {
+    public void deleteCourse(String courseId) {
         Optional<Course> result = course.findById(courseId);
         if (!result.isPresent()) {
-            throw new CourseNotFoundException("course not found to perform DELETE operation");
+            throw new NotFoundException("course not found to perform DELETE operation");
         }
-        Course deletedResult = result.get();
-        if(deletedResult!=null){
-            course.delete(deletedResult);
-        }
-        return result;
+        course.deleteById(courseId);
     }
+
 
 }

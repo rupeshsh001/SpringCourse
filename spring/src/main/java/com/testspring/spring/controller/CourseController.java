@@ -18,39 +18,36 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.testspring.spring.entities.Course;
-import com.testspring.spring.errorHandLing.CourseAlreadyExistsException;
-import com.testspring.spring.errorHandLing.CourseNotFoundException;
+import com.testspring.spring.errorHandLing.AlreadyExistsException;
+import com.testspring.spring.errorHandLing.NotFoundException;
 import com.testspring.spring.errorHandLing.ErrorResponse;
 import com.testspring.spring.services.CourseService;
 
 import jakarta.validation.Valid;
 
 @RestController //Rest===?representational state transfer
-public class MyController {
+@RequestMapping(value = "/course")
+public class CourseController {
 
     @Autowired
     private CourseService courseService;
     
-    @RequestMapping (value = "/", method = RequestMethod.GET)
-    public HashMap<String, Object> index() {
-        HashMap<String, Object> obj = new HashMap<>();
-        obj.put("developerName", "Rupesh Sharma");
-        obj.put("projectName", "Course");
-        obj.put("version", 1.0);
-        return obj;
-    }
-
-    @GetMapping("/courses")
+    @GetMapping("")
     public List<Course> getCourses(){
         return this.courseService.getCourses();
     }
 
-    @GetMapping("/courses/{courseId}")
+    @GetMapping("search")
+    public List<Course> getCourseByTitle(@RequestParam("searchby") String title){
+        return this.courseService.getCourseByTitle(title);
+    }
+
+    @GetMapping("/{courseId}")
     public Optional<Course> getCourseById(@PathVariable String courseId){
         return this.courseService.getCourseById(courseId);
     }
@@ -66,13 +63,13 @@ public class MyController {
     }
 
     @DeleteMapping("/delete/{courseId}")
-    public Optional<Course> deleteCourse(@PathVariable String courseId){
-        return this.courseService.deleteCourse(courseId);
+    public void deleteCourse(@PathVariable String courseId){
+        this.courseService.deleteCourse(courseId);
     }
     
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(CourseAlreadyExistsException err) {
+    public ResponseEntity<ErrorResponse> handleException(AlreadyExistsException err) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setStatusCode(HttpStatus.FORBIDDEN.value());
         errorResponse.setMessage(err.getMessage());
@@ -81,7 +78,7 @@ public class MyController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(CourseNotFoundException err) {
+    public ResponseEntity<ErrorResponse> handleException(NotFoundException err) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setStatusCode(HttpStatus.FORBIDDEN.value());
         errorResponse.setMessage(err.getMessage());
