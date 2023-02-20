@@ -1,8 +1,8 @@
 package com.testspring.spring.entities;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -27,7 +27,6 @@ public class User {
     @Pattern(regexp = "^[0-9]{10}$", message = "phone number should be of size 10")
     private String phone;
     
-    @DBRef
     private List<String> courses;
 
     private String userType="user";

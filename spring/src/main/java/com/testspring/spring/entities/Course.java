@@ -32,10 +32,13 @@ public class Course {
     private List<String> languageRequired;
     private boolean isTrending=true;
 
-    public Course(String title, String description, List<String> languageRequired) {
+    public Course(String title, String durationInMonth, int amount, String description, List<String> languageRequired, boolean isTrending) {
         this.title = title;
+        this.durationInMonth = durationInMonth;
+        this.amount = amount;
         this.description = description;
         this.languageRequired = languageRequired;
+        this.isTrending = isTrending;
     }
 
     public String getId() {
@@ -89,6 +92,18 @@ public class Course {
     public void setAmount(int amount) {
         this.amount = amount;
     }    
+
+
+    // @Override
+    // public String toString() {
+    //     return "{" +
+    //             " title='" + getTitle() + "'" +
+    //             ", durationInMonth='" + getDurationInMonth() + "'" +
+    //             ", amount='" + getAmount() + "'" +
+    //             ", description='" + getDescription() + "'" +
+    //             ", languageRequired='" + getLanguageRequired() + "'" +
+    //             "}";
+    // }
 
     // @Override
     // public String toString() {

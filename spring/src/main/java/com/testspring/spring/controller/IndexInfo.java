@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndexInfo {
     @RequestMapping (value = {"/"}, method = RequestMethod.GET)
     public HashMap<String, Object> index() {
-        System.out.println("idhar aya h bhailoag");
         HashMap<String, Object> obj = new HashMap<>();
         obj.put("developerName", "Rupesh Sharma");
         obj.put("projectName", "Course");
