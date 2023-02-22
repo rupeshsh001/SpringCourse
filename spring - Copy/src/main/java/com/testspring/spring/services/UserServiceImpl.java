@@ -62,8 +62,6 @@ public class UserServiceImpl implements UserService {
         return result.get(0);
     }
 
-    @Override
-    public List<User> searchUser(String searchQuery) {
-        return user.searchUser(searchQuery);
-    }
+   
+
 }

@@ -9,6 +9,5 @@ public interface UserService {
     public User addUser(User user);
     public User getUserByID(String userId);
     public User delteUserByID(String userId);
-    public List<User> searchUser(String searchQuery);
 
 }

@@ -80,7 +80,7 @@ class ApplicationTests {
 	@Order(4)
 	public void shouldReturnIndexJSON() throws Exception {
 		mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
-				.andExpect(content().json("{'projectName':'Course Management','developerName':'Rupesh Sharma','version':1.0}",false));
+				.andExpect(content().json("{'projectName':'Course','developerName':'Rupesh Sharma','version':1.0}",false));
 	}
 
 	@Test

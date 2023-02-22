@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
@@ -45,12 +44,6 @@ public class UserController {
     public User addUser(@Valid @RequestBody User user) {
         System.out.println(user+ " user here");
         return this.userService.addUser(user);
-    }
-
-    @RequestMapping (value = "/searchuser", method = RequestMethod.GET)
-    public List<User> searchUser(@RequestParam("searchby") String searchQuery) {
-        System.out.println(searchQuery+"[][][]");
-        return this.userService.searchUser(searchQuery);
     }
 
     @RequestMapping(value="/delete/{userId}")
